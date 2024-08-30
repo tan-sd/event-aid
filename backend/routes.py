@@ -159,15 +159,14 @@ def create_user_event():
       }), 400
     
   
-@all_routes.route("/update_event/<int:event_id>", methods=["PUT"])
+@all_routes.route("/event_sign_up/<int:event_id>", methods=["PUT"])
 def update_event(event_id):
     try:
-        event = db.session.query(User_event).filter_by(event_id=event_id).first()
-
+        data = request.get_json()
+        username = data['senior_username']
+        event = db.session.query(User_event).filter_by(event_id=event_id ,   senior_username = username).first()
         if not event:
             return jsonify({'code': 404, 'message': 'Event not found'}), 404
-
-        data = request.get_json()
 
         if 'is_sign_up' in data:
             event.is_sign_up = True
