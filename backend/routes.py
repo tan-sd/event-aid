@@ -157,3 +157,23 @@ def create_user_event():
           'message': 'Expression of interest for this event has failed.',
           'error' : str(e)
       }), 400
+    
+  
+@all_routes.route("/update_event/<int:event_id>", methods=["PUT"])
+def update_event(event_id):
+    try:
+        event = db.session.query(User_event).filter_by(event_id=event_id).first()
+
+        if not event:
+            return jsonify({'code': 404, 'message': 'Event not found'}), 404
+
+        data = request.get_json()
+
+        if 'is_sign_up' in data:
+            event.is_sign_up = True
+
+        db.session.commit()
+        return jsonify({'code': 200, 'message': 'Event updated successfully'}), 200
+    except Exception as e:
+        return jsonify({'code': 500, 'message': str(e)}), 500
+
