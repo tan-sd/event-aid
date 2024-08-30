@@ -177,3 +177,28 @@ def update_event(event_id):
     except Exception as e:
         return jsonify({'code': 500, 'message': str(e)}), 500
 
+
+@all_routes.route('/edit_is_confirmed', methods=['PUT'])
+def edit_event_listing():
+    edit_data = request.get_json()
+    id = edit_data['event_id']
+    senior_username = edit_data['senior_username']
+    query_event_listing = User_event.query.filter_by(event_id=id, senior_username=senior_username).first()
+    
+    try:
+        query_event_listing.is_confirmed = True
+
+        db.session.commit()
+
+        return jsonify({
+            'isApplied': True,
+            'message': f'Event id {id} & senior username {senior_username} has been saved!'
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'isApplied': False,
+            'message': f'Failed to update status!',
+            'error' : str(e)
+        })
