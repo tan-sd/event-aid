@@ -191,11 +191,15 @@ def get_user_event_by_user(senior_username):
         }), 400
     
   
-@all_routes.route("/update_event/<int:event_id>", methods=["PUT"])
-def update_event(event_id):
-    try:
-        event = db.session.query(User_event).filter_by(event_id=event_id).first()
 
+@all_routes.route("/edit_is_sign_up/<int:event_id>", methods=["PUT"])
+def edit_is_sign_up(event_id):
+    try:
+       
+        data = request.get_json()
+        username = data['senior_username']
+        event = db.session.query(User_event).filter_by(event_id=event_id ,   senior_username = username).first()
+        
         if not event:
             return jsonify({'code': 404, 'message': 'Event not found'}), 404
 
@@ -206,6 +210,7 @@ def update_event(event_id):
 
         db.session.commit()
         return jsonify({'code': 200, 'message': 'Event updated successfully'}), 200
+    
     except Exception as e:
         return jsonify({'code': 500, 'message': str(e)}), 500
     
