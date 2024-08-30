@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-DB_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
+DB_URI = os.environ["DB_URI"]
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 
 
@@ -18,3 +18,5 @@ routes =[]
 for route in routes:
     app.register_blueprint(route)
 
+from routes import *
+app.register_blueprint(all_routes)
