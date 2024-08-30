@@ -28,13 +28,13 @@ def get_all_event():
         return jsonify({
             'message': "Successfully retrieved data from database",
             "data": event_list
-        })
+        }), 200
       
       except Exception as e:
         return jsonify({
             'message': 'Failed to retrieve events!',
             'error' : str(e)
-        })
+        }), 400
 
 @all_routes.route("/create_event" , methods=["POST"])
 def create_event():
@@ -136,4 +136,24 @@ def create_users():
     return jsonify({
         'message': 'Failed to create user!',
         'error' : str(e)
-    })
+    }), 400
+  
+@all_routes.route("/create_user_event", methods=["POST"])
+def create_user_event():
+    data = request.json
+    senior_username = data.get('senior_username')
+    event_id = data.get('event_id')
+    is_sign_up = data.get('is_sign_up')
+    is_confirmed = data.get('is_confirmed')
+
+    try:
+      user_event = User_event(senior_username=senior_username, event_id=event_id, is_sign_up=is_sign_up, is_confirmed=is_confirmed)
+      db.session.add(user_event)
+      db.session.commit()
+      return jsonify({'message': 'You have expressed interest in this event.'}), 201
+    
+    except Exception as e:
+      return jsonify({
+          'message': 'Expression of interest for this event has failed.',
+          'error' : str(e)
+      }), 400
