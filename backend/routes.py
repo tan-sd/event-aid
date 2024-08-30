@@ -1,4 +1,5 @@
-from flask import jsonify, Blueprint , request
+from flask import jsonify, Blueprint, request
+from __init__ import db
 from models.event import Event
 from models.guardian import Guardian
 from models.planner import Planner
@@ -35,65 +36,43 @@ def get_all_event():
             'message': 'Failed to retrieve events!',
             'error' : str(e)
         })
-
-@all_routes.route("/create_event" , methods=["POST"])
-def create_event():
-    try:
-        data = request.get_json()
-        required_fields = ['location' , 'title' , 'description' , 'planner_username']
-
-        for field in required_fields:
-          if field not in data:
-              return jsonify({'code': 400, 'message': f"'{field}' is missing in the request data"}), 400
-          
-        planner = db.session.query(Planner).filter_by(username=data['planner_username']).first()
-        if not planner:
-            return jsonify({'code': 404, 'message': 'Planner username not found'}), 404
-          
-        new_event = Event(
-            location=data['location'],
-            title=data['title'],
-            description=data['description'],
-            planner_username=data['planner_username'],
-            datetime=datetime.now()  
-        )
-
-        db.session.add(new_event)
-        db.session.commit()
-
-        return jsonify(
-            {
-                "code": 200,
-                'message': "Successfully created event to the database",
-            }
-        ), 200
-
-
-    except Exception as e:
-      return jsonify(
-          {
-              "code": 500,
-              "message": f"An error occurred while retrieving the applicants, {str(e)}"
-          }
-    ), 500
       
-@all_routes.route('/delete_event/<int:event_id>', methods=['DELETE'])
-def delete_event(event_id):
-    query_delete_listing = Event.query.filter_by(event_id=event_id).all()[0]
+@all_routes.route("/create_users", methods=["GET", "POST"])
+def create_users():
+  data = request.json
 
-    try:
-        db.session.delete(query_delete_listing)
-        db.session.commit()
+  # Extracting data from request
+  senior_username = data.get('senior_username')
+  senior_password = data.get('senior_password')
+  guardian_username = data.get('guardian_username')
+  guardian_password = data.get('guardian_password')
 
-        return jsonify({
-            'isDeleted': True,
-            'message': f'Event id {event_id} has been deleted!'
-        })
+  # Check if all necessary data is provided
+  if not all([senior_username, senior_password, guardian_username, guardian_password]):
+      return jsonify({'error': 'Missing data'}), 400
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({
-            'isApplied': False,
-            'message': f'Failed to delete event id {event_id}!',
-            'error' : str(e)
-        })
+  try:
+    # Check if the senior already exists
+    senior_exists = Senior.query.filter_by(username=senior_username).first()
+    guardian_exists = Guardian.query.filter_by(guardian_username=guardian_username).first()
+    
+    if senior_exists or guardian_exists:
+        return jsonify({'error': 'Senior or Guardian already exists'}), 400
+    
+    # Create new Senior and Guardian records
+    new_senior = Senior(username=senior_username, password=senior_password)
+    new_guardian = Guardian(guardian_username=guardian_username, guardian_password=guardian_password, username=senior_username)
+    
+    # Add to the session and commit
+    db.session.add(new_senior)
+    db.session.commit()
+    db.session.add(new_guardian)
+    db.session.commit()
+        
+    return jsonify({'message': 'Senior and Guardian created successfully'}), 201
+
+  except Exception as e:
+    return jsonify({
+        'message': 'Failed to create user!',
+        'error' : str(e)
+    })
