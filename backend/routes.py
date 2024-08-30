@@ -160,20 +160,28 @@ def create_user_event():
 
 @all_routes.route("/get_user_event_by_user/<senior_username>", methods=["GET"])
 def get_user_event_by_user(senior_username):
-    query_results = User_event.query.filter_by(senior_username=senior_username).all()
-    user_events = []
-    for event in query_results:
-        event_dict = {}
-        event_dict['event_id'] = event.event_id
-        event_dict['senior_username'] = event.senior_username
-        event_dict['is_sign_up'] = event.is_sign_up
-        event_dict['is_confirmed'] = event.is_confirmed
-        user_events.append(event_dict)
     try:
-        return jsonify({
-            'message': "Successfully retrieved all events your dependent has expressed in.",
-            "data": user_events
-        }), 200
+        query_results = User_event.query.filter_by(senior_username=senior_username).all()
+        user_events = []
+
+        if len(query_results) == 0:
+           return jsonify({
+                'message': "There are no events of interest.",
+                "data": user_events
+            }), 200
+        
+        for event in query_results:
+            event_dict = {}
+            event_dict['event_id'] = event.event_id
+            event_dict['senior_username'] = event.senior_username
+            event_dict['is_sign_up'] = event.is_sign_up
+            event_dict['is_confirmed'] = event.is_confirmed
+            user_events.append(event_dict)
+            
+            return jsonify({
+                'message': "Successfully retrieved all events of interest.",
+                "data": user_events
+            }), 200
       
     except Exception as e:
         return jsonify({
