@@ -1,33 +1,29 @@
 <template>
     <div class="login-container">
-        <h2>Login</h2>
-        <form>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    v-model="email"
-                    required
-                    placeholder="Enter your email"
-                />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    v-model="password"
-                    required
-                    placeholder="Enter your password"
-                />
-            </div>
-            <!-- <button type="submit">Login</button> -->
-            <button>
-                <RouterLink to="/home">Login</RouterLink>
-            </button>
-            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        </form>
+        <div class="logo-container">
+            <img class="logo" src="/event-aid-logo.png" />
+        </div>
+        <div class="form-floating mb-3">
+            <input
+                type="email"
+                class="form-control"
+                id="floatingInput"
+                placeholder="name@example.com"
+            />
+            <label for="floatingInput">Email</label>
+        </div>
+        <div class="form-floating">
+            <input
+                type="password"
+                class="form-control"
+                id="floatingPassword"
+                placeholder="Password"
+            />
+            <label for="floatingPassword">Password</label>
+        </div>
+        <!-- <button type="submit">Login</button> -->
+        <RouterLink class="router-link" to="/home">Log in</RouterLink>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
 </template>
 
@@ -39,16 +35,19 @@
     transform: translate(-50%, -50%);
     width: 300px;
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #fafafa;
     color: black;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.logo {
+    height: 80px;
+    width: 80px;
+}
+
+.logo-text {
+    font-size: 40px;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 .form-group {
@@ -56,31 +55,33 @@ h2 {
 }
 
 label {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+}
+
+.logo-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.router-link {
+    margin-top: 15px;
     display: block;
-    margin-bottom: 5px;
-}
-
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
+    text-align: center;
+    padding: 15px 10px 15px 10px;
     background-color: #fb923c;
     color: white;
     font-weight: bold;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     cursor: pointer;
+    text-decoration: none;
 }
 
-button:hover {
+.router-link:hover {
     background-color: #ff7300;
 }
 
