@@ -157,16 +157,40 @@ def create_user_event():
           'message': 'Expression of interest for this event has failed.',
           'error' : str(e)
       }), 400
+
+@all_routes.route("/get_user_event_by_user/<senior_username>", methods=["GET"])
+def get_user_event_by_user(senior_username):
+    query_results = User_event.query.filter_by(senior_username=senior_username).all()
+    user_events = []
+    for event in query_results:
+        event_dict = {}
+        event_dict['event_id'] = event.event_id
+        event_dict['senior_username'] = event.senior_username
+        event_dict['is_sign_up'] = event.is_sign_up
+        event_dict['is_confirmed'] = event.is_confirmed
+        user_events.append(event_dict)
+    try:
+        return jsonify({
+            'message': "Successfully retrieved all events your dependent has expressed in.",
+            "data": user_events
+        }), 200
+      
+    except Exception as e:
+        return jsonify({
+            'message': 'Failed to retrieve events!',
+            'error' : str(e)
+        }), 400
     
   
-@all_routes.route("/event_sign_up/<int:event_id>", methods=["PUT"])
+@all_routes.route("/update_event/<int:event_id>", methods=["PUT"])
 def update_event(event_id):
     try:
-        data = request.get_json()
-        username = data['senior_username']
-        event = db.session.query(User_event).filter_by(event_id=event_id ,   senior_username = username).first()
+        event = db.session.query(User_event).filter_by(event_id=event_id).first()
+
         if not event:
             return jsonify({'code': 404, 'message': 'Event not found'}), 404
+
+        data = request.get_json()
 
         if 'is_sign_up' in data:
             event.is_sign_up = True
@@ -175,29 +199,3 @@ def update_event(event_id):
         return jsonify({'code': 200, 'message': 'Event updated successfully'}), 200
     except Exception as e:
         return jsonify({'code': 500, 'message': str(e)}), 500
-
-
-@all_routes.route('/edit_is_confirmed', methods=['PUT'])
-def edit_event_listing():
-    edit_data = request.get_json()
-    id = edit_data['event_id']
-    senior_username = edit_data['senior_username']
-    query_event_listing = User_event.query.filter_by(event_id=id, senior_username=senior_username).first()
-    
-    try:
-        query_event_listing.is_confirmed = True
-
-        db.session.commit()
-
-        return jsonify({
-            'isApplied': True,
-            'message': f'Event id {id} & senior username {senior_username} has been saved!'
-        })
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({
-            'isApplied': False,
-            'message': f'Failed to update status!',
-            'error' : str(e)
-        })
