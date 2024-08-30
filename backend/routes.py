@@ -4,6 +4,7 @@ from models.guardian import Guardian
 from models.planner import Planner
 from models.senior import Senior
 from models.user_event import User_event
+from __init__ import db
 
 all_routes = Blueprint('all', __name__)
 
@@ -31,5 +32,26 @@ def get_all_event():
       except Exception as e:
         return jsonify({
             'message': 'Failed to retrieve events!',
+            'error' : str(e)
+        })
+      
+@all_routes.route('/delete_event/<int:event_id>', methods=['DELETE'])
+def delete_event(event_id):
+    query_delete_listing = Event.query.filter_by(event_id=event_id).all()[0]
+
+    try:
+        db.session.delete(query_delete_listing)
+        db.session.commit()
+
+        return jsonify({
+            'isDeleted': True,
+            'message': f'Event id {event_id} has been deleted!'
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'isApplied': False,
+            'message': f'Failed to delete event id {event_id}!',
             'error' : str(e)
         })
