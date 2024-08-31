@@ -9,6 +9,7 @@
                 class="form-control"
                 id="floatingInput"
                 placeholder="name@example.com"
+                v-model="username"
             />
             <label for="floatingInput">Email</label>
         </div>
@@ -18,14 +19,68 @@
                 class="form-control"
                 id="floatingPassword"
                 placeholder="Password"
+                v-model="password"
             />
             <label for="floatingPassword">Password</label>
         </div>
         <!-- <button type="submit">Login</button> -->
-        <RouterLink class="router-link" to="/PlannerHome">Log in</RouterLink>
+        <button class="router-link" @click="login_now()">Log in</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
 </template>
+
+
+<script>
+    export default {
+        name: 'Login',
+        data() {
+            return {
+                errorMessage: null,
+                username: '',
+                password: '',
+            };
+        },
+        methods: {
+            login() {
+                this.errorMessage = 'Invalid email or password';
+            },
+            checkusertype(username) {
+                // checks user type and id (user type is the string at the start, id is the number at the end)
+                var user_type = '';
+                var user_id = '';
+
+                // for loop and stop when char is a number
+                for (var i = 0; i < username.length; i++) {
+                    if (isNaN(username.charAt(i))) {
+                        user_type += username.charAt(i)
+                    } else {
+                        user_id += username.charAt(i)
+                    }
+                }
+
+                return [user_type, user_id]
+            },
+            login_now() {
+                // Check usertype and id
+                var user_data = this.checkusertype(this.username)
+                var user_type = user_data[0]
+                var user_id = user_data[1]
+
+                // If user is elderly
+                if (user_type.charAt(0) == 'e') {
+                    this.$router.push({ name: 'elderlyHome'})
+                } else if (user_type.charAt(0) == 'g') {
+                    this.$router.push({ name: 'guardianHome'})
+                } else if (user_type.charAt(0) == 'p') {
+                    this.$router.push({ name: 'plannerHome'})
+                } else {
+                    this.errorMessage = 'Invalid email or password';
+                }
+            }
+        },
+    };
+</script>
+
 
 <style scoped>
 .login-container {

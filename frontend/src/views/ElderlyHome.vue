@@ -1,46 +1,3 @@
-<script setup>
-import { ref } from "vue";
-import Scrollbar from "@/components/Scrollbar.vue";
-
-const expandedIndex = ref(null);
-const heartAnimated = ref(Array(10).fill(false));
-const liked = ref(Array(10).fill(false));
-const buttonText = ref(Array(10).fill("Join the fun"));
-
-function toggleDetails(index) {
-    expandedIndex.value = expandedIndex.value === index ? null : index;
-}
-
-function animateHeart(index) {
-    if (!liked.value[index]) {
-        heartAnimated.value[index] = true;
-
-        setTimeout(() => {
-            heartAnimated.value[index] = false;
-            liked.value[index] = true;
-        }, 800);
-    } else {
-        heartAnimated.value[index] = false;
-        liked.value[index] = false;
-    }
-}
-
-function handleButtonClick(index) {
-    if (!liked.value[index]) {
-        heartAnimated.value[index] = true;
-        buttonText.value[index] = "Interest confirmed";
-
-        setTimeout(() => {
-            heartAnimated.value[index] = false;
-            liked.value[index] = true;
-        }, 800);
-    } else {
-        liked.value[index] = false;
-        buttonText.value[index] = "Join the fun";
-    }
-}
-</script>
-
 <template>
     <main>
         <div class="welcome-container">
@@ -60,67 +17,53 @@ function handleButtonClick(index) {
         <div class="event-container">
             <div class="event-container-title">Upcoming Events</div>
             <Scrollbar>
-                <div class="" v-for="n in 10" :key="n">
-                    <div
-                        class="card event-card"
-                        style="width: 20rem; margin-bottom: 20px"
-                    >
-                        <img
-                            src="/event-aid-logo.png"
-                            class="card-img-top"
-                            alt="..."
-                        />
+                <div v-for="e_event in all_events" :key="e_event.id">
+                    <div class="card event-card" style="width: 20rem; margin-bottom: 20px">
+                        <img src="https://picsum.photos/400/600" class="card-img-top"/>
+                        
                         <div class="card-body">
-                            <h5 class="card-title">Tai Chi Session</h5>
-                            <p class="card-text">5 Sep 2024</p>
+                            <h5 class="card-title">{{ e_event.title }}</h5>
+                            <p class="card-text">{{ e_event.datetime }}</p>
                             <p class="d-inline-flex gap-1">
                                 <button
                                     class="btn btn-color"
                                     type="button"
                                     data-bs-toggle="collapse"
                                     :data-bs-target="'#collapseExample' + n"
-                                    aria-expanded="false"
+                                    :aria-expanded="e_event.is_open"
                                     :aria-controls="'collapseExample' + n"
-                                    @click="toggleDetails(n)"
+                                    @click="toggleOpen(e_event)"
                                 >
                                     {{
-                                        expandedIndex === n
-                                            ? "x"
-                                            : "Click for more details"
+                                        !e_event.is_open
+                                            ? "Click for more details"
+                                            : "x"
                                     }}
                                 </button>
                             </p>
+
                             <div class="collapse" :id="'collapseExample' + n">
                                 <div class="card card-body">
                                     <div
                                         class="event-description"
                                         style="margin-bottom: 10px"
                                     >
-                                        Lorem ipsum dolor sit amet consectetur
-                                        adipisicing elit. Atque necessitatibus
-                                        ab minus facilis iure. Minima iste
-                                        eligendi officia unde esse.
+                                        {{ e_event.description }}
                                     </div>
                                     <div
                                         class="event-location"
                                         style="margin-bottom: 10px"
                                     >
-                                        Bukit Batok Community Center
+                                        {{ e_event.location }}
                                     </div>
                                     <div class="btn-event-container">
                                         <button
                                             class="btn event-indicate"
-                                            @click="handleButtonClick(n - 1)"
+                                            @click="handleButtonClick(e_event)"
                                         >
-                                            {{ buttonText[n - 1] }}
+                                            {{ !e_event.is_signedup ? "I'm in!" : "I'm out!" }}
                                         </button>
-                                        <div
-                                            class="event-heart-icon"
-                                            :class="{
-                                                animate: heartAnimated[n - 1],
-                                                liked: liked[n - 1],
-                                            }"
-                                        ></div>
+                                        <div><font-awesome-icon icon="fa-solid fa-heart" /></div>
                                     </div>
                                 </div>
                             </div>
@@ -131,6 +74,58 @@ function handleButtonClick(index) {
         </div>
     </main>
 </template>
+
+<script>
+import { ref } from "vue";
+import Scrollbar from "@/components/Scrollbar.vue";
+
+export default {
+    name: "ElderlyHome",
+    data() {
+        return {
+            elderly_name: "Bob",
+            all_events: [
+                {
+                    "datetime": "Sun, 15 Sep 2024 10:00:00 GMT",
+                    "description": "A health check-up for seniors.",
+                    "id": 1,
+                    "location": "Community Center",
+                    "planner_username": "planner1",
+                    "title": "Health Check-up",
+                    "is_open": false,
+                    "is_signedup": false,
+                }, {
+                    "datetime": "Fri, 20 Sep 2024 14:00:00 GMT",
+                    "description": "A yoga session to promote wellness.",
+                    "id": 2,
+                    "location": "Park",
+                    "planner_username": "planner2",
+                    "title": "Yoga Session",
+                    "is_open": false,
+                    "is_signedup": false,
+                }, {
+                    "datetime": "Wed, 25 Sep 2024 09:00:00 GMT",
+                    "description": "Reading session with a local author.",
+                    "id": 3,
+                    "location": "Library",
+                    "planner_username": "planner1",
+                    "title": "Book Reading",
+                    "is_open": false,
+                    "is_signedup": false,
+                }
+            ],
+        };
+    },
+    methods: {
+        toggleOpen(e_event) {
+            e_event.is_open = !e_event.is_open;
+        },
+        handleButtonClick(e_event) {
+            e_event.is_signedup = !e_event.is_signedup;
+        },
+    },
+};
+</script>
 
 <style scoped>
 .welcome-container {
@@ -156,6 +151,7 @@ function handleButtonClick(index) {
     margin: 20px 0 0 30px;
     color: black;
     align-items: center;
+    overflow: scroll;
 }
 
 .event-container-title {
