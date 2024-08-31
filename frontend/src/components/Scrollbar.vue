@@ -220,7 +220,7 @@ onMounted(() => {
         -ms-overflow-style: none;
         overflow: auto;
         scrollbar-width: none;
-        height: 70vh;
+        height: 80vh;
     }
 
     .content::-webkit-scrollbar {
