@@ -1,5 +1,27 @@
 <script setup>
+import { ref } from "vue";
 import Scrollbar from "@/components/Scrollbar.vue";
+
+const expandedIndex = ref(null);
+const heartAnimated = ref(Array(10).fill(false));
+const liked = ref(Array(10).fill(false));
+
+function toggleDetails(index) {
+    expandedIndex.value = expandedIndex.value === index ? null : index;
+}
+
+function animateHeart(index) {
+    if (!liked.value[index]) {
+        heartAnimated.value[index] = true;
+
+        setTimeout(() => {
+            heartAnimated.value[index] = false;
+            liked.value[index] = true;
+        }, 800);
+    } else {
+        liked.value[index] = false;
+    }
+}
 </script>
 
 <template>
@@ -10,19 +32,69 @@ import Scrollbar from "@/components/Scrollbar.vue";
         </div>
 
         <div class="event-container">
-            <div class="">Upcoming Events</div>
+            <div class="event-container-title">Upcoming Events</div>
             <Scrollbar>
-                <div class="" v-for="n in 10">
-                    <div class="card" style="width: 18rem">
-                        <img src="..." class="card-img-top" alt="..." />
+                <div class="" v-for="n in 10" :key="n">
+                    <div class="card event-card" style="width: 20rem">
+                        <img
+                            src="/event-aid-logo.png"
+                            class="card-img-top"
+                            alt="..."
+                        />
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">
-                                Some quick example text to build on the card
-                                title and make up the bulk of the card's
-                                content.
+                            <h5 class="card-title">Tai Chi Session</h5>
+                            <p class="card-text">5 Sep 2024</p>
+                            <p class="d-inline-flex gap-1">
+                                <button
+                                    class="btn btn-color"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    :data-bs-target="'#collapseExample' + n"
+                                    aria-expanded="false"
+                                    :aria-controls="'collapseExample' + n"
+                                    @click="toggleDetails(n)"
+                                >
+                                    {{
+                                        expandedIndex === n
+                                            ? "x"
+                                            : "Click for more details"
+                                    }}
+                                </button>
                             </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <div class="collapse" :id="'collapseExample' + n">
+                                <div class="card card-body">
+                                    <div
+                                        class="event-description"
+                                        style="margin-bottom: 10px"
+                                    >
+                                        Lorem ipsum dolor sit amet consectetur
+                                        adipisicing elit. Atque necessitatibus
+                                        ab minus facilis iure. Minima iste
+                                        eligendi officia unde esse.
+                                    </div>
+                                    <div
+                                        class="event-location"
+                                        style="margin-bottom: 10px"
+                                    >
+                                        Bukit Batok Commuity Center
+                                    </div>
+                                    <div class="btn-event-container">
+                                        <button
+                                            class="btn event-indicate"
+                                            @click="animateHeart(n - 1)"
+                                        >
+                                            I am interested
+                                        </button>
+                                        <div
+                                            class="event-heart-icon"
+                                            :class="{
+                                                animate: heartAnimated[n - 1],
+                                                liked: liked[n - 1],
+                                            }"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,7 +127,49 @@ import Scrollbar from "@/components/Scrollbar.vue";
     margin: 40px 0 0 40px;
     color: black;
     align-items: center;
-    /* display: flex; */
-    /* flex-direction: row; */
+}
+
+.event-container-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: #ff7300;
+    color: #ffffff;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+}
+
+.btn-event-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.event-heart-icon {
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/66955/web_heart_animation.png");
+    background-repeat: no-repeat;
+    background-size: 2900%;
+    background-position: left;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+}
+
+.liked {
+    background-position: right;
+}
+
+.animate {
+    animation: heart-burst 0.8s steps(28) forwards;
+}
+@keyframes heart-burst {
+    0% {
+        background-position: left;
+    }
+    100% {
+        background-position: right;
+    }
 }
 </style>
