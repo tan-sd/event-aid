@@ -144,11 +144,9 @@ def create_user_event():
     data = request.json
     senior_username = data.get('senior_username')
     event_id = data.get('event_id')
-    is_sign_up = data.get('is_sign_up')
-    is_confirmed = data.get('is_confirmed')
 
     try:
-      user_event = User_event(senior_username=senior_username, event_id=event_id, is_sign_up=is_sign_up, is_confirmed=is_confirmed)
+      user_event = User_event(senior_username=senior_username, event_id=event_id, is_sign_up=False, is_confirmed=False)
       db.session.add(user_event)
       db.session.commit()
       return jsonify({'message': 'You have expressed interest in this event.'}), 201
@@ -203,10 +201,11 @@ def edit_is_sign_up(event_id):
         if not event:
             return jsonify({'code': 404, 'message': 'Event not found'}), 404
 
-        data = request.get_json()
-
         if 'is_sign_up' in data:
             event.is_sign_up = True
+        
+        else:
+            return jsonify({'code': 404, 'message': 'is_sign_up status not found'}), 404
 
         db.session.commit()
         return jsonify({'code': 200, 'message': 'Event updated successfully'}), 200
