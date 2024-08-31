@@ -22,7 +22,7 @@
             <label for="floatingPassword">Password</label>
         </div>
         <!-- <button type="submit">Login</button> -->
-        <RouterLink class="router-link" to="/elderlyHome">Log in</RouterLink>
+        <RouterLink class="router-link" to="/PlannerHome">Log in</RouterLink>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
 </template>

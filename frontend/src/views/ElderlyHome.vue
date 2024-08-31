@@ -46,6 +46,15 @@ function handleButtonClick(index) {
         <div class="welcome-container">
             <div class="profile-picture"></div>
             <div class="welcome-message">Hi, John Doe!</div>
+            <div class="col-auto">
+                <RouterLink
+                    to="/login"
+                    class="btn btn-primary bg-orange"
+                    style="margin-left: 10px"
+                >
+                    Log out
+                </RouterLink>
+            </div>
         </div>
 
         <div class="event-container">
@@ -203,5 +212,10 @@ function handleButtonClick(index) {
     width: 100%;
     height: 15vw;
     object-fit: cover;
+}
+
+.col-auto {
+    margin-left: auto;
+    margin-right: 1rem;
 }
 </style>
