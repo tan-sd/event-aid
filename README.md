@@ -81,3 +81,10 @@ npm run dev
 | **Password**       | **12345**  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<br>
+
+## Demo
+Watch the video demo <a href="https://drive.google.com/file/d/1S2BqUPykaYnInonyAuLv_5skeR5j834X/view?usp=drivesdk">here</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
