@@ -5,6 +5,7 @@ import Scrollbar from "@/components/Scrollbar.vue";
 const expandedIndex = ref(null);
 const heartAnimated = ref(Array(10).fill(false));
 const liked = ref(Array(10).fill(false));
+const buttonText = ref(Array(10).fill("Join the fun"));
 
 function toggleDetails(index) {
     expandedIndex.value = expandedIndex.value === index ? null : index;
@@ -19,7 +20,23 @@ function animateHeart(index) {
             liked.value[index] = true;
         }, 800);
     } else {
+        heartAnimated.value[index] = false;
         liked.value[index] = false;
+    }
+}
+
+function handleButtonClick(index) {
+    if (!liked.value[index]) {
+        heartAnimated.value[index] = true;
+        buttonText.value[index] = "Interest confirmed";
+
+        setTimeout(() => {
+            heartAnimated.value[index] = false;
+            liked.value[index] = true;
+        }, 800);
+    } else {
+        liked.value[index] = false;
+        buttonText.value[index] = "Join the fun";
     }
 }
 </script>
@@ -35,7 +52,10 @@ function animateHeart(index) {
             <div class="event-container-title">Upcoming Events</div>
             <Scrollbar>
                 <div class="" v-for="n in 10" :key="n">
-                    <div class="card event-card" style="width: 20rem; margin-bottom: 20px;">
+                    <div
+                        class="card event-card"
+                        style="width: 20rem; margin-bottom: 20px"
+                    >
                         <img
                             src="/event-aid-logo.png"
                             class="card-img-top"
@@ -76,14 +96,14 @@ function animateHeart(index) {
                                         class="event-location"
                                         style="margin-bottom: 10px"
                                     >
-                                        Bukit Batok Commuity Center
+                                        Bukit Batok Community Center
                                     </div>
                                     <div class="btn-event-container">
                                         <button
                                             class="btn event-indicate"
-                                            @click="animateHeart(n - 1)"
+                                            @click="handleButtonClick(n - 1)"
                                         >
-                                            I am interested
+                                            {{ buttonText[n - 1] }}
                                         </button>
                                         <div
                                             class="event-heart-icon"
@@ -105,7 +125,7 @@ function animateHeart(index) {
 
 <style scoped>
 .welcome-container {
-    margin: 40px 0 0 40px;
+    margin: 20px 0 0 30px;
     color: black;
     align-items: center;
     display: flex;
@@ -124,7 +144,7 @@ function animateHeart(index) {
 }
 
 .event-container {
-    margin: 40px 0 0 40px;
+    margin: 20px 0 0 30px;
     color: black;
     align-items: center;
 }
@@ -138,6 +158,12 @@ function animateHeart(index) {
 .btn {
     background-color: #ff7300;
     color: #ffffff;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+}
+
+.event-description,
+.event-location {
     font-size: 13px;
     letter-spacing: 0.04em;
 }
@@ -171,5 +197,11 @@ function animateHeart(index) {
     100% {
         background-position: right;
     }
+}
+
+.card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
 }
 </style>
