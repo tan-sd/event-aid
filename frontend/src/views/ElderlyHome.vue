@@ -35,7 +35,7 @@ function animateHeart(index) {
             <div class="event-container-title">Upcoming Events</div>
             <Scrollbar>
                 <div class="" v-for="n in 10" :key="n">
-                    <div class="card event-card" style="width: 20rem">
+                    <div class="card event-card" style="width: 20rem; margin-bottom: 20px;">
                         <img
                             src="/event-aid-logo.png"
                             class="card-img-top"
