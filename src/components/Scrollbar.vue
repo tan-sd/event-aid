@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="scrollbar-container">
         <div class="content" id="custom-scrollbars-content" ref="contentRef">
             <slot></slot>
         </div>
@@ -208,7 +208,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-    .container {
+    .scrollbar-container {
         display: grid;
         height: 100%;
         grid-template: auto / 1fr 50px;
@@ -221,7 +221,6 @@ onMounted(() => {
         overflow: auto;
         scrollbar-width: none;
         height: 80vh;
-        /* padding: 0 1rem; */
     }
 
     .content::-webkit-scrollbar {
