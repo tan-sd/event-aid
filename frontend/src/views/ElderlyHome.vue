@@ -29,9 +29,9 @@
                                     class="btn btn-color"
                                     type="button"
                                     data-bs-toggle="collapse"
-                                    :data-bs-target="'#collapseExample' + n"
+                                    :data-bs-target="'#collapseExample' + e_event.id"
                                     :aria-expanded="e_event.is_open"
-                                    :aria-controls="'collapseExample' + n"
+                                    :aria-controls="'collapseExample' + e_event.id"
                                     @click="toggleOpen(e_event)"
                                 >
                                     {{
@@ -42,7 +42,7 @@
                                 </button>
                             </p>
 
-                            <div class="collapse" :id="'collapseExample' + n">
+                            <div class="collapse" :id="'collapseExample' + e_event.id">
                                 <div class="card card-body">
                                     <div
                                         class="event-description"
